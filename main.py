@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 import secrets
 import random,time
 import string
@@ -36,7 +36,7 @@ def send_email(to_email: str, new_password: str):
         print(f"Failed to send email: {e}")
 
 @app.post("/reset-password/")
-async def reset_password(request: Request):
+async def reset_password(request: Request,response: Response):
     data = await request.json()
     email = data.get("email")
     
@@ -46,12 +46,25 @@ async def reset_password(request: Request):
     # In a real application, validate that the email exists in your database
 
     # Generate a new random password
-    new_password = generate_random_password()
+    #new_password = generate_random_password()
+
+    """Generate an insecure random password based on UNIX time."""
+    # Seed random number generator with the current UNIX time
+    seed = int(time.time())
+    random.seed(seed)
+    
+    characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()"
+    password = ''.join(random.choice(characters) for _ in range(12))
+    print(f"Generated password with seed {seed}: {password}")  # Debugging: shows how the password is generated
+
+
 
     # Send the new password to the email address
-    send_email(email, new_password)
-
+    send_email(email, password)
+    response.headers["System Time"] = str(seed)
+   
     return {"message": "If the email exists in our system, a new password has been sent."}
+
 
 if __name__ == "__main__":
     import uvicorn
