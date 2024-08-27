@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+</head>
+<body>
+    <h1>Reset Password</h1>
+    <form id="resetForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Reset Password</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        document.getElementById('resetForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/reset-password/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({ 'email': email })
+                });
+
+                const messageElement = document.getElementById('message');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    messageElement.textContent = data.message;
+                } else {
+                    const errorData = await response.json();
+                    messageElement.textContent = `Error: ${errorData.detail}`;
+                }
+            } catch (error) {
+                document.getElementById('message').textContent = 'An error occurred while resetting the password.';
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
