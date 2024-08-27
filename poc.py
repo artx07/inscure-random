@@ -8,7 +8,7 @@ def generate_insecure_password(seed: int, length: int = 12) -> str:
     password = ''.join(random.choice(characters) for _ in range(length))
     return password
 
-def demonstrate_insecure_random_attack(approx_seed: int, length: int = 12, range_seconds: int = 5) -> str:
+def random_attack(approx_seed: int, length: int = 12, range_seconds: int = 5) -> str:
   
     print(f"Attempting to crack the password generated around seed: {approx_seed} within +/- {range_seconds} seconds")
 
@@ -24,8 +24,7 @@ def demonstrate_insecure_random_attack(approx_seed: int, length: int = 12, range
 
 if __name__ == "__main__":
    
-    approx_seed = int(input("Enter the approximate UNIX time seed"))
-    range_seconds = 20
+    approx_seed = int(input("Enter the approximate UNIX time seed: "))
+    range_seconds = 20 # We can ajust this but the passwords list could be more bigger
 
-
-    demonstrate_insecure_random_attack(approx_seed, length=12, range_seconds=range_seconds)
+    random_attack(approx_seed, length=12, range_seconds=range_seconds)

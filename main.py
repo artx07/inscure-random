@@ -6,7 +6,7 @@ import smtplib
 app = FastAPI()
 
 
-# Email settings (configure these as needed)
+
 SMTP_SERVER = 'localhost'
 SMTP_PORT = 1025
 
@@ -44,12 +44,13 @@ async def reset_password(request: Request,response: Response , email: str = Form
     
     """Generate an insecure random password based on UNIX time."""
     # Seed random number generator with the current UNIX time
+    #we can use this for conversion of your time https://www.unixtimestamp.com/
     seed = int(time.time())
     random.seed(seed)
     
     characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()"
     password = ''.join(random.choice(characters) for _ in range(12))
-    print(f"Generated password with seed {seed}: {password}")  # Debugging: shows how the password is generated
+    print(f"Generated password with seed {seed}: {password}")  
 
 
 
