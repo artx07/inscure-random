@@ -4,18 +4,32 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password</title>
+    <title>Reset Password and Login</title>
 </head>
 <body>
     <h1>Reset Password</h1>
+    <!-- Reset Password Form -->
     <form id="resetForm">
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
         <button type="submit">Reset Password</button>
     </form>
-    <p id="message"></p>
+    <p id="resetMessage"></p>
+
+    <h1>Login</h1>
+    <!-- Login Form -->
+    <form id="loginForm">
+        <label for="Email">Email:</label>
+        <input type="text" id="Email" name="Email" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <p id="loginMessage"></p>
 
     <script>
+        // Reset Password Form Submission
         document.getElementById('resetForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
@@ -30,17 +44,54 @@
                     body: new URLSearchParams({ 'email': email })
                 });
 
-                const messageElement = document.getElementById('message');
+                const resetMessageElement = document.getElementById('resetMessage');
 
                 if (response.ok) {
                     const data = await response.json();
-                    messageElement.textContent = data.message;
+                    resetMessageElement.textContent = data.message;
                 } else {
                     const errorData = await response.json();
-                    messageElement.textContent = `Error: ${errorData.detail}`;
+                    resetMessageElement.textContent = `Error: ${errorData.detail}`;
                 }
             } catch (error) {
-                document.getElementById('message').textContent = 'An error occurred while resetting the password.';
+                document.getElementById('resetMessage').textContent = 'An error occurred while resetting the password.';
+                console.error('Error:', error);
+            }
+        });
+
+        // Login Form Submission
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('Email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({ 'email': email, 'password': password })
+                });
+
+                const loginMessageElement = document.getElementById('loginMessage');
+
+                
+                const data = await response.json();
+                loginMessageElement.textContent = data.message
+                console.log(data)
+
+                // Check the actual message returned by the server
+                if (data === "Access grated") {
+                    loginMessageElement.textContent = data;
+                } else if (data === "Access wrong, bad password or email") {
+                    loginMessageElement.textContent = data;
+
+               
+                } 
+            } catch (error) {
+                document.getElementById('loginMessage').textContent = 'An error occurred during login.';
                 console.error('Error:', error);
             }
         });
